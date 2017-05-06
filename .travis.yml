@@ -22,9 +22,12 @@ script: if [[ -v COMMAND ]]; then $COMMAND; else travis_retry ./mvnw -q -Djava.s
 # Remove --quiet to avoid timeouts
 install: mvn -U install -DskipTests=true --settings /var/tmp/settings.xml | egrep -v 'Download|Install'
 
-notifications:
-  email:
-    - kill-bill-commits@googlegroups.com
+before_install:
+  - wget https://dl.dropboxusercontent.com/u/7897865/apache-maven-3.3.9.zip
+  - unzip -qq apache-maven-3.3.9.zip
+  - export M2_HOME=$PWD/apache-maven-3.3.9
+  - export PATH=$M2_HOME/bin:$PATH
+
 
 env:
   global:
@@ -52,5 +55,5 @@ matrix:
     - env: PHASE="-Ppostgresql,jdk18" JDK=openjdk8
   fast_finish: true
 
-after_success:
-  - '[ "${TRAVIS_PULL_REQUEST}" = "false" ] && echo "<settings><servers><server><id>sonatype-nexus-snapshots</id><username>\${env.OSSRH_USER}</username><password>\${env.OSSRH_PASS}</password></server></servers></settings>" > ~/settings.xml && mvn deploy -DskipTests=true --settings ~/settings.xml | egrep "WARN|ERR|\[INFO\]\ ---|Upload" | egrep -v "[0-9]+/[0-9]+ KB" ; rm -f ~/settings.xml'
+#after_success:
+#  - '[ "${TRAVIS_PULL_REQUEST}" = "false" ] && echo "<settings><servers><server><id>sonatype-nexus-snapshots</id><username>\${env.OSSRH_USER}</username><password>\${env.OSSRH_PASS}</password></server></servers></settings>" > ~/settings.xml && mvn deploy -DskipTests=true --settings ~/settings.xml | egrep "WARN|ERR|\[INFO\]\ ---|Upload" | egrep -v "[0-9]+/[0-9]+ KB" ; rm -f ~/settings.xml'
