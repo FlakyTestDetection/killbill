@@ -17,20 +17,14 @@ language: java
 matrix:
   fast_finish: true
   include:
-  - env: PHASE="-Ptravis,jdk16" JDK=oraclejdk8
-  - env: PHASE="-Ptravis,jdk16" JDK=openjdk8
   - env: PHASE="-Ptravis,jdk17" JDK=oraclejdk8
   - env: PHASE="-Ptravis,jdk17" JDK=openjdk8
   - env: PHASE="-Ptravis,jdk18" JDK=oraclejdk8
   - env: PHASE="-Ptravis,jdk18" JDK=openjdk8
-  - env: PHASE="-Pmysql,jdk16" JDK=oraclejdk8
-  - env: PHASE="-Pmysql,jdk16" JDK=openjdk8
   - env: PHASE="-Pmysql,jdk17" JDK=oraclejdk8
   - env: PHASE="-Pmysql,jdk17" JDK=openjdk8
   - env: PHASE="-Pmysql,jdk18" JDK=oraclejdk8
   - env: PHASE="-Pmysql,jdk18" JDK=openjdk8
-  - env: PHASE="-Ppostgresql,jdk16" JDK=oraclejdk8
-  - env: PHASE="-Ppostgresql,jdk16" JDK=openjdk8
   - env: PHASE="-Ppostgresql,jdk17" JDK=oraclejdk8
   - env: PHASE="-Ppostgresql,jdk17" JDK=openjdk8
   - env: PHASE="-Ppostgresql,jdk18" JDK=oraclejdk8
@@ -42,5 +36,5 @@ notifications:
     template:
     - Build <%{build_url}|#%{build_number}> (<%{compare_url}|%{commit}>) of %{repository}@%{branch} by %{author} %{result} in %{duration}
     - 'dashbot: %{repository_name} %{build_id}'
-script: if [[ -v COMMAND ]]; then $COMMAND; else travis_retry ./mvnw -q -Djava.security.egd=file:/dev/./urandom -Dorg.slf4j.simpleLogger.defaultLogLevel=WARN -Dorg.slf4j.simpleLogger.log.org.killbill.billing.util.cache=ERROR -Dorg.slf4j.simpleLogger.log.org.killbill.billing.lifecycle=ERROR -Dlogback.configurationFile=$PWD/profiles/killbill/src/test/resources/logback.travis.xml clean install $PHASE -pl '!beatrix,!profiles,!profiles/killbill,!profiles/killpay' 2>&1 | egrep -v 'Download|Install|[ \t]*at [ \ta-zA-Z0-9\.\:\(\)]+'; [ ${PIPESTATUS[0]} == 0 ]; fi
+script: if [[ -v COMMAND ]]; then $COMMAND; else travis_retry mvn -Djava.security.egd=file:/dev/./urandom -Dorg.slf4j.simpleLogger.defaultLogLevel=WARN -Dorg.slf4j.simpleLogger.log.org.killbill.billing.util.cache=ERROR -Dorg.slf4j.simpleLogger.log.org.killbill.billing.lifecycle=ERROR -Dlogback.configurationFile=$PWD/profiles/killbill/src/test/resources/logback.travis.xml clean install $PHASE -pl '!beatrix,!profiles,!profiles/killbill,!profiles/killpay' 2>&1 | egrep -v 'Download|Install|[ \t]*at [ \ta-zA-Z0-9\.\:\(\)]+'; [ ${PIPESTATUS[0]} == 0 ]; fi
 sudo: false
